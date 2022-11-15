@@ -1,29 +1,39 @@
 CC := g++
-CFLAGS := -std=c++17 -Wall -lgdi32 -lkernel32  -luser32 -llibopencv_core455 -llibopencv_highgui455 -llibopencv_imgproc455 -llibopencv_imgcodecs455 -municode
+CFLAGS := -std=c++17 -Wall -lgdi32 -lkernel32  -luser32 -llibopencv_core455 -llibopencv_highgui455 -llibopencv_imgproc455 -llibopencv_imgcodecs455 -lws2_32
 EXTRAFLAGS := -g -DDEBUG
+EXENAME := run
 
 
 buildPath := build
 srcPath := src
-objPath := objs
+socketPath := src\Socket
+objPath := OBJ
 
-vpath %.cpp $(src)
-vpath %.h  $(src)
+OBJ = socket.o tcpSocket.o windowCaptrue.o server.o client.o
+OBJ := $(addprefix $(objPath)/, $(OBJ))
 
-.PHONY: clean build rebuild run
+vpath %.cpp $(srcPath):$(socketPath)
+vpath %.h   $(srcPath):$(socketPath)
 
+.PHONY: clean build rebuild run server client
 
 $(objPath)/%.o: %.cpp %.h
-	$(CC) -o $(objPath)/$@ $< -c $(CFLAGS) $(EXTRAFLAGS)
+	$(CC) -o $@ $< -c $(CFLAGS) $(EXTRAFLAGS)
 
-$(buildPath)/run.exe: $(OBJ) $(srcPath)/capture.cpp
-	$(CC) -o $@ $^ $(CFLAGS) $(EXTRAFLAGS)
+$(buildPath)/$(EXENAME).exe: $(OBJ) $(srcPath)/main.cpp
+	$(CC) -o $@ $^ $(CFLAGS) $(EXTRAFLAGS) $(CLIENTFLAGS) $(SERVERFLAGS)
+
+run: $(buildPath)/$(EXENAME).exe
+
+server: 
+	$(MAKE) run SERVERFLAGS="-DSERVER" EXENAME="server"
+
+client: 
+	$(MAKE) run CLIENTFLAGS="-DCLIENT" EXENAME="client"
 
 
-run: $(buildPath)/run.exe
-	$<
-
-build: $(buildPath)/run.exe
+build:
+	$(MAKE) run EXENAME="run"
 
 clean:
 	cd $(buildPath) && DEL /F/Q/S *.* > NUL
