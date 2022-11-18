@@ -29,6 +29,10 @@ run the build.bat
 
 ```client.exe -ip YOUR_SERVER_IP -port SAME_AS_SERVER_LISTEN_PORT```
 
+## view exmple:
+<img src="screenShot.png" width="50%" height="50%" />
+
+
 ## todo list:
 - [] linux support / mac.
 - [] let the client control the remote screen with privilege.
