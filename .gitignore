@@ -1,9 +1,8 @@
-*.exe
-*.dll
 *.lib
 *.o
 *.pdb
 *.exp
 *.bmp
-.vscode/launch.json
+vscode/launch.json
 
+.vscode/settings.json

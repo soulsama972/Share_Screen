@@ -47,7 +47,7 @@ void TcpSocket::init(const char * host, const short port, bool serverSide)
 
 }
 
-int TcpSocket::sendData(void* buf, int len)
+int TcpSocket::sendData(void* buf, int len) const
 {
     return send(conn, (const char *)buf, len, 0);
 }
@@ -57,7 +57,7 @@ int TcpSocket::recvData(void* buf, int len)
     return recv(conn, (char*)buf, len, 0);
 }
 
-bool TcpSocket::isConnected()
+bool TcpSocket::isConnected() const
 {
     int errorCode;
     int errorCodeSize = sizeof(errorCode);

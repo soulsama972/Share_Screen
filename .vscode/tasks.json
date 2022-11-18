@@ -1,0 +1,17 @@
+{
+    "tasks": [
+        {
+            "type": "shell",
+            "label": "build",
+            "command": "make",
+            "args": [
+                "client"
+            ],
+            "group" : {
+               "kind": "build",
+               "isDefault": true 
+           }
+        }
+    ],
+    "version": "2.0.0"
+}

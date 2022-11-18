@@ -10,9 +10,9 @@ public:
     TcpSocket(const char * host, const short port,bool serverSide);
     void init(const char * host, const short port,bool serverSide);
 
-    int sendData(void* buf, int len);
+    int sendData(void* buf, int len) const;
     int recvData(void* buf, int len);
-    bool isConnected();
+    bool isConnected() const;
     bool acceptConnection();
     bool openConnection();
 

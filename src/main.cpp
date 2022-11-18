@@ -1,25 +1,82 @@
-
 #ifdef SERVER
 #include"server.h"
 #elif CLIENT
 #include"client.h"
 #endif
 
-//#define SERVER 1
-//#define CLIENT 1
+
+
+
+constexpr int PORT = 8888;
+
 
 int main(int argc, char* argv[])
 {
 
 #ifdef SERVER
-    Server().run();
+    char const* ip = "0.0.0.0";
+    int port = PORT;
+
+    
+        for(int i = 1; i < argc;i++)
+        {
+            if(i + 1 >= argc)
+            {
+                printf("Missing argument exiting..\n");
+                exit(-1);
+            }
+
+            else if(!strcmp(argv[i], "-ip"))
+            {
+                ip = argv[i + 1];
+                i++;
+            }
+
+            else if(!strcmp(argv[i], "-port"))
+            {
+                port = atoi(argv[i + 1]);
+                i++;
+            }
+
+            else
+            {
+                printf("Invalid argument exiting..\n");
+                exit(-1);
+            }
+        }
+    Server(ip, port).run();
+
 #elif CLIENT
-    if (__argc != 2) 
-    {
-        printf("please pass to command line the host ip \n");
-        return 0;
-    }
-    Client(argv[1]).run(); 
+    char * ip = 0;
+    int port = PORT;
+
+    
+        for(int i = 1; i < argc;i++)
+        {
+            if(i + 1 >= argc)
+            {
+                printf("Missing argument exiting..\n");
+                exit(-1);
+            }
+            else if(!strcmp(argv[i], "-ip"))
+            {
+                ip = argv[i + 1];
+                i++;
+            }
+
+            else if(!strcmp(argv[i], "-port"))
+            {
+                port = atoi(argv[i + 1]);
+                i++;
+            }
+
+            else
+            {
+                printf("Invalid argument exiting..\n");
+                exit(-1);
+            }
+        }
+    Client(ip, port).run(); 
 #endif
     return 0;
 }

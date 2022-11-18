@@ -1,6 +1,4 @@
 #include"Socket/tcpSocket.h"
-#include"Socket/udpSocket.h"
-
 
 #ifdef _WIN32
 #include<windows.h>
@@ -17,11 +15,10 @@
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/highgui.hpp>
 
-
 class Client
 {
 public:
-    Client(char* host);
+    Client(const char* host, int port);
     void run();
 
 #ifdef _WIN32
@@ -34,7 +31,7 @@ public:
 #endif
 
 private:
-    void recvData(std::vector<uchar>& buffer);
+    bool recvData(std::vector<uchar>& buffer);
 
     TcpSocket socket;
 };

@@ -1,7 +1,5 @@
 #include"client.h"
-
 #include<chrono>
-
 
 #ifdef _WIN32
 
@@ -68,24 +66,11 @@ void Client::sideThreadUpdateWindow(HWND target)
 {
     socket.openConnection();
     std::vector<uchar> buffer;
-    cv::Mat resizeImg;
-
-    RECT rect;
-    GetClientRect(GetDesktopWindow(), &rect);
-
-    int width = rect.right - rect.left;
-    int height = rect.bottom - rect.top;
 
     while(true) 
     {
-
-
         recvData(buffer);
-        cv::resize(cv::imdecode(buffer, cv::IMREAD_COLOR), resizeImg, cv::Size(width, height), cv::INTER_LINEAR);
-        cv::imshow("aa", resizeImg);
-        cv::waitKey(1);
-        //updateWindow(target, cv::imdecode(buffer, cv::IMREAD_COLOR));
-
+        updateWindow(target, cv::Mat(1440, 2560, CV_8UC4, &buffer[0], 10240));
     }
 
 
@@ -94,6 +79,44 @@ void Client::sideThreadUpdateWindow(HWND target)
 
 void Client::run()
 {
+
+    socket.openConnection();
+    std::vector<uchar> buffer;
+    std::vector<uchar> b;
+    cv::Mat resizeImg;
+    RECT rect;
+    GetClientRect(GetDesktopWindow(), &rect);
+    int width = rect.right - rect.left;
+    int height = rect.bottom - rect.top;
+    int fps = 0;
+    auto start = std::chrono::high_resolution_clock::now();
+    // cv::resize(cv::imdecode(buffer, cv::IMREAD_UNCHANGED), resizeImg, cv::Size(width, height), cv::INTER_LINEAR);
+    while(true) 
+    {
+        if(recvData(buffer))
+        {
+
+
+            fps++;
+            //resizeImg = cv::Mat(1440, 2560, CV_8UC4, &buffer[0], 10240);
+            cv::resize(cv::imdecode(buffer, cv::IMREAD_UNCHANGED), resizeImg, cv::Size(width, height), cv::INTER_LINEAR);
+            cv::imshow("hey", resizeImg);
+            cv::waitKey(1);
+        }
+        //updateWindow(target,  cv::imdecode(buffer, cv::IMREAD_UNCHANGED));
+
+        auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - start);
+        if(ms.count() > 1000)
+        {
+            printf("FPS:%d\n", fps);
+            fps = 0;
+            start = std::chrono::high_resolution_clock::now();
+        }
+
+
+    }
+
+
 
     HWND hWindow = createWindow(GetModuleHandle(NULL));
     std::thread th(&Client::sideThreadUpdateWindow, this, hWindow);
@@ -107,31 +130,29 @@ void Client::run()
 
 #endif
 
-Client::Client(char* host)
+Client::Client(const char* host, int port)
 {
-    socket.init(host, 8888, false);
+    socket.init(host, port, false);
 }
 
 
-void Client::recvData(std::vector<uchar>& buffer)
+bool Client::recvData(std::vector<uchar>& buffer)
 {
     uint32_t chank = 65000;
-    uint32_t size;
-    socket.recvData(&size, 4);
+    uint32_t totalRecv = 0, len,size;
+
+    if(socket.recvData(&size, 4) == (int)INVALID_SOCKET) return false;
     buffer.resize(size);
-    uint32_t totalSent = 0, len;
-    uchar* buf = new uchar[size];
+    
     while(size > 0)
     {
         len = size < chank ? size : chank;
-        len = socket.recvData(buf + totalSent, len);
-        if(len == INVALID_SOCKET) break;
+        len = socket.recvData(&buffer[totalRecv], len);
+        if(len == (uint32_t)INVALID_SOCKET) return false;
 
-        totalSent += len;
+        totalRecv += len;
         size -= len;
     }
 
-    memcpy(&buffer[0], buf, totalSent);
-    delete[] buf;
-
+    return true;
 }

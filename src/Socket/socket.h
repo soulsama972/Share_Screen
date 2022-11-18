@@ -33,19 +33,4 @@ protected:
     char message[200];
     bool initWinsock();
     void cleanup();
-    void inetPton(const char * host, struct sockaddr_in & saddr_in);
-
 };
-
-// void setUdpTimeout(uint32_t msec)
-// {
-// #ifdef _WIN32
-//     setsockopt(_sock, SOL_SOCKET, SO_RCVTIMEO, (char *) &msec, sizeof(msec));
-
-// #else
-//     struct timeval timeout;
-//     timeout.tv_sec = msec / 1000;
-//     timeout.tv_usec = (msec * 1000) % 1000000;
-//     setsockopt(_sock, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout));
-// #endif
-// }

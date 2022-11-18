@@ -1,6 +1,6 @@
 CC := g++
-CFLAGS := -std=c++17 -Wall -lgdi32 -lkernel32  -luser32 -llibopencv_core455 -llibopencv_highgui455 -llibopencv_imgproc455 -llibopencv_imgcodecs455 -lws2_32
-EXTRAFLAGS := -g -DDEBUG
+CFLAGS := -std=c++17 -Wall -g -DDEBUG
+LIBS :=  -ld3d11 -lgdi32 -lkernel32 -luser32 -lws2_32 -llibopencv_core455 -llibopencv_highgui455 -llibopencv_imgproc455 -llibopencv_imgcodecs455
 EXENAME := run
 
 
@@ -18,10 +18,10 @@ vpath %.h   $(srcPath):$(socketPath)
 .PHONY: clean build rebuild run server client
 
 $(objPath)/%.o: %.cpp %.h
-	$(CC) -o $@ $< -c $(CFLAGS) $(EXTRAFLAGS)
+	$(CC) -o $@ $< -c $(CFLAGS)
 
 $(buildPath)/$(EXENAME).exe: $(OBJ) $(srcPath)/main.cpp
-	$(CC) -o $@ $^ $(CFLAGS) $(EXTRAFLAGS) $(CLIENTFLAGS) $(SERVERFLAGS)
+	$(CC) -o $@ $^ $(CFLAGS) $(CLIENTFLAGS) $(SERVERFLAGS) $(LIBS)
 
 run: $(buildPath)/$(EXENAME).exe
 

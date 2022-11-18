@@ -40,12 +40,3 @@ void Socket::cleanup()
     WSACleanup();
 #endif
 }
-
-void Socket::inetPton(const char * host, struct sockaddr_in & saddr_in)
-{
-#ifdef _WIN32
-    InetPton(AF_INET, host,&(saddr_in.sin_addr.s_addr));
-#else
-    inet_pton(AF_INET, host, &(saddr_in.sin_addr));
-#endif
-}

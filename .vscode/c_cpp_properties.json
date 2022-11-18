@@ -3,8 +3,7 @@
         {
             "name": "Win32",
             "includePath": [
-                "${workspaceFolder}/**",
-                "C:\\Users\\micha\\Downloads\\OpenCV-MinGW-Build-OpenCV-4.5.5-x64\\OpenCV-MinGW-Build-OpenCV-4.5.5-x64\\include"
+                "${workspaceFolder}/**"
             ],
             "defines": [
                 "_DEBUG",
